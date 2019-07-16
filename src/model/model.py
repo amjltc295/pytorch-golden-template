@@ -6,6 +6,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from model.base_model import BaseModel
+from model.networks import (
+    Generator
+)
 
 
 class MnistModel(BaseModel):
@@ -32,3 +35,35 @@ class MnistModel(BaseModel):
         return {
             "model_output": out
         }
+
+
+class WaveAutoEncoderModel(BaseModel):
+    def __init__(self, config, nc_in=1, nc_out=1):
+        super().__init__()
+        nf = config['nf']
+        norm = config['norm']
+        use_bias = config['bias']
+
+        # warning: if 2d convolution is used in generator, settings (e.g. stride,
+        # kernal_size, padding) on the temporal axis will be discarded
+        self.conv_dim = config.get('conv_dim', "1d")
+        self.conv_type = config('conv_type', "vanilla")
+
+        self.config = config
+
+        ######################
+        # Convolution layers #
+        ######################
+        self.generator = Generator(
+            nc_in, nc_out, nf, use_bias, norm, self.conv_dim, self.conv_type,
+        )
+
+        #################
+        # Discriminator #
+        #################
+
+    def forward(self, data_dict):
+        x = data_dict['data_input']
+
+        output = self.generator(x)
+        return output

@@ -1,0 +1,14 @@
+{
+    "name": "WaveAutoEncoder",
+    "arch": {
+        "type": "WaveAutoEncoderModel",
+        "args": {
+            "nf": 32,
+            "norm": "SN",
+            "bias": true,
+            "conv_dim": "1d",
+            "conv_type": "vanilla"
+        }
+    }
+}
+
