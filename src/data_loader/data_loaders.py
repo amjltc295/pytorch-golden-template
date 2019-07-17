@@ -26,9 +26,6 @@ class MnistDataLoader(BaseDataLoader):
 
 class SC09DataLoader(BaseDataLoader):
     def __init__(self, data_dir, batch_size, shuffle=True, validation_split=0.0, num_workers=1, training=True):
-        self.transform = transforms.Compose([
-            transforms.ToTensor(),
-        ])
         self.data_dir = data_dir
-        self.dataset = SC09Dataset(data_dir, transform=self.transform)
+        self.dataset = SC09Dataset(data_dir)
         super().__init__(self.dataset, batch_size, shuffle, validation_split, num_workers)

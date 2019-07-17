@@ -1,0 +1,13 @@
+{
+    "name": "SC09_b64",
+    "data_loader": {
+        "type": "SC09DataLoader",
+        "args": {
+            "data_dir": "../datasets/sc09/train",
+            "batch_size": 64,
+            "validation_split": 0.1,
+            "num_workers": 4,
+            "shuffle": true
+        }
+    }
+}
