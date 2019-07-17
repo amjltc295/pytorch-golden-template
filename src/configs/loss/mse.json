@@ -1,0 +1,24 @@
+{
+    "name": "MSE",
+    "losses": [
+        {
+            "nickname": "MSE",
+            "type": "MSELoss",
+            "weight": 1,
+            "args": {
+                "output_key": "model_output",
+                "target_key": "data_input"
+            }
+        }
+    ],
+    "metrics": [
+        {
+            "type": "MSEMetric",
+            "args": {
+                "nickname": "MSE",
+                "output_key": "model_output",
+                "target_key": "data_input"
+            }
+        }
+    ]
+}
