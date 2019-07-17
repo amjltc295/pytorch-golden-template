@@ -49,3 +49,8 @@ class Trainer(WorkerTemplate):
         np.random.seed()
         self.model.train()
         logger.info(f'Current lr: {get_lr(self.optimizer)}')
+
+    def _write_data(self, data, model_output):
+        """ Write data to Tensorboard """
+        self.writer.add_audio("data_input", data["data_input"].squeeze(1)[0], 16000, self.step)
+        self.writer.add_audio("model_output", model_output["model_output"].squeeze(1)[0], 16000, self.step)

@@ -56,9 +56,10 @@ class WorkerTemplate(ABC):
         """ Set random seed and self.model.eval() or self.model.train() """
         pass
 
-    def _write_images(self, data, model_output):
-        """ Write images to Tensorboard """
-        self.writer.add_image("data_input", make_grid(data["data_input"], nrow=4, normalize=True))
+    def _write_data(self, data, model_output):
+        """ Write data to Tensorboard """
+        # self.writer.add_image("data_input", make_grid(data["data_input"], nrow=4, normalize=True))
+        pass
 
     # ============ Implement the above functions ==============
 
@@ -116,7 +117,7 @@ class WorkerTemplate(ABC):
             model_output, loss, metrics = self._run_and_optimize_model(data)
 
             if batch_idx % self.log_step == 0:
-                self._write_images(data, model_output)
+                self._write_data(data, model_output)
                 if self.verbosity >= 2:
                     self._print_log(epoch, batch_idx, batch_start_time, loss, metrics)
 
