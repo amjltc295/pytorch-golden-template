@@ -62,13 +62,24 @@ class Generator(nn.Module):
         self, nc_in, nc_out, nf, use_bias, norm, conv_dim, conv_type, use_refine=False
     ):
         super().__init__()
+        self.conv_type = conv_type
+        self.downsample_module = DownSampleModule(
+            nc_in, nf, use_bias, norm, conv_dim, conv_type)
+        self.upsample_module = UpSampleModule(
+            nf * 4, nc_out, nf, use_bias, norm, conv_dim, conv_type)
+        """
         self.coarse_net = CoarseNet(
             nc_in, nc_out, nf, use_bias, norm, conv_dim, conv_type
         )
 
-    def forward(self, masked_imgs, masks, guidances=None):
-        coarse_outputs = self.coarse_net(masked_imgs, masks, guidances)
-        return {"outputs": coarse_outputs}
+        """
+
+    def forward(self, x):
+        # coarse_outputs = self.coarse_net(masked_imgs, masks, guidances)
+
+        encoded_features = self.downsample_module(x)
+        model_output = self.upsample_module(encoded_features)
+        return {"model_output": model_output}
 
 
 ##################

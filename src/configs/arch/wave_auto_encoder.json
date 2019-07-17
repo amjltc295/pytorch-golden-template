@@ -5,7 +5,7 @@
         "args": {
             "nf": 32,
             "norm": "SN",
-            "bias": true,
+            "use_bias": true,
             "conv_dim": "1d",
             "conv_type": "vanilla"
         }

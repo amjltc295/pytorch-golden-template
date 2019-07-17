@@ -64,7 +64,7 @@ class VanillaConv(nn.Module):
         else:
             raise NotImplementedError(f'conv_dim {conv_dim} is not implemented.')
 
-        self.padding = tuple(((np.array(kernel_size) - 1) * np.array(dilation)) // 2) if padding == -1 else padding
+        self.padding = ((kernel_size - 1) * dilation) // 2 if padding == -1 else padding
         self.featureConv = self.module.Conv1d(
             in_channels, out_channels, kernel_size,
             stride, self.padding, dilation, groups, bias)
@@ -106,5 +106,5 @@ class VanillaDeconv(nn.Module):
         self.scale_factor = scale_factor
 
     def forward(self, xs):
-        xs_resized = F.interpolate(xs, scale_factor=(1, self.scale_factor, self.scale_factor))
+        xs_resized = F.interpolate(xs, scale_factor=self.scale_factor)
         return self.conv(xs_resized)

@@ -28,26 +28,26 @@ class DownSampleModule(BaseModule):
             first_conv_dim = conv_dim
 
         self.conv1 = self.ConvBlock(
-            nc_in, nf * 1, kernel_size=30, stride=1,
-            padding=1, bias=use_bias, norm=norm, conv_dim=first_conv_dim)
+            nc_in, nf * 1, kernel_size=32, stride=1,
+            padding=-1, bias=use_bias, norm=norm, conv_dim=first_conv_dim)
 
         # Downsample 1
         self.conv2 = self.ConvBlock(
-            nf * 1, nf * 2, kernel_size=25, stride=2,
-            padding=2, bias=use_bias, norm=norm, conv_dim=conv_dim)
+            nf * 1, nf * 2, kernel_size=24, stride=2,
+            padding=-1, bias=use_bias, norm=norm, conv_dim=conv_dim)
         self.conv3 = self.ConvBlock(
             nf * 2, nf * 2, kernel_size=20, stride=1,
-            padding=1, bias=use_bias, norm=norm, conv_dim=conv_dim)
+            padding=10, bias=use_bias, norm=norm, conv_dim=conv_dim)
         # Downsample 2
         self.conv4 = self.ConvBlock(
-            nf * 2, nf * 4, kernel_size=25, stride=2,
-            padding=1, bias=use_bias, norm=norm, conv_dim=conv_dim)
+            nf * 2, nf * 4, kernel_size=24, stride=2,
+            padding=-1, bias=use_bias, norm=norm, conv_dim=conv_dim)
         self.conv5 = self.ConvBlock(
             nf * 4, nf * 4, kernel_size=20, stride=1,
-            padding=1, bias=use_bias, norm=norm, conv_dim=conv_dim)
+            padding=-1, bias=use_bias, norm=norm, conv_dim=conv_dim)
         self.conv6 = self.ConvBlock(
             nf * 4, nf * 4, kernel_size=20, stride=1,
-            padding=1, bias=use_bias, norm=norm, conv_dim=conv_dim)
+            padding=-1, bias=use_bias, norm=norm, conv_dim=conv_dim)
 
         # Dilated Convolutions
         self.dilated_conv1 = self.ConvBlock(
@@ -63,10 +63,10 @@ class DownSampleModule(BaseModule):
             nf * 4, nf * 4, kernel_size=20, stride=1,
             padding=-1, bias=use_bias, norm=norm, conv_dim=conv_dim, dilation=16)
         self.conv7 = self.ConvBlock(
-            nf * 4, nf * 4, kernel_size=20, stride=1, padding=1,
+            nf * 4, nf * 4, kernel_size=20, stride=1, padding=10,
             bias=use_bias, norm=norm, conv_dim=conv_dim)
         self.conv8 = self.ConvBlock(
-            nf * 4, nf * 4, kernel_size=20, stride=1, padding=1,
+            nf * 4, nf * 4, kernel_size=20, stride=1, padding=10,
             bias=use_bias, norm=norm, conv_dim=conv_dim)
 
     def forward(self, inp):
@@ -92,21 +92,21 @@ class UpSampleModule(BaseModule):
         super().__init__(conv_type)
         # Upsample 1
         self.deconv1 = self.DeconvBlock(
-            nc_in, nf * 2, kernel_size=20, stride=1, padding=1,
+            nc_in, nf * 2, kernel_size=20, stride=1, padding=-1,
             bias=use_bias, norm=norm, conv_dim=conv_dim)
         self.conv9 = self.ConvBlock(
-            nf * 2, nf * 2, kernel_size=20, stride=1, padding=1,
+            nf * 2, nf * 2, kernel_size=20, stride=1, padding=10,
             bias=use_bias, norm=norm, conv_dim=conv_dim)
         # Upsample 2
         self.deconv2 = self.DeconvBlock(
-            nf * 2, nf * 1, kernel_size=20, stride=1, padding=1,
+            nf * 2, nf * 1, kernel_size=20, stride=1, padding=-1,
             bias=use_bias, norm=norm, conv_dim=conv_dim)
         self.conv10 = self.ConvBlock(
-            nf * 1, nf // 2, kernel_size=20, stride=1, padding=1,
+            nf * 1, nf // 2, kernel_size=20, stride=1, padding=10,
             bias=use_bias, norm=norm, conv_dim=conv_dim)
         self.conv11 = self.ConvBlock(
-            nf // 2, nc_out, kernel_size=20, stride=1,
-            padding=1, bias=use_bias, norm=None, activation=None, conv_dim=conv_dim)
+            nf // 2, nc_out, kernel_size=19, stride=1,
+            padding=-1, bias=use_bias, norm=None, activation=None, conv_dim=conv_dim)
 
     def concat_feature(self, ca, cb):
         if self.conv_type == 'partial':
