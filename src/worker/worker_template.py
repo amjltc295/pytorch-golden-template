@@ -17,7 +17,7 @@ class WorkerTemplate(ABC):
     that deals with the main optimization & model inference.
     """
     def __init__(
-        self, pipeline: BasePipeline, data_loader: BaseDataLoader, step: int
+        self, pipeline: BasePipeline, data_loader: BaseDataLoader, step: int, write_tensorboard=True
     ):
         # Attributes listed below are shared from pipeline among all different workers.
         for attr_name in ['device', 'model', 'evaluation_metrics', 'writer']:
@@ -25,6 +25,7 @@ class WorkerTemplate(ABC):
 
         self.data_loader = data_loader
         self.step = step  # Tensorboard log step
+        self.write_tensorboard = write_tensorboard
 
     # ============ Implement the following functions ==============
     @property
@@ -86,15 +87,16 @@ class WorkerTemplate(ABC):
             losses.append(loss)
             self.writer.add_scalar(f'{loss_function.nickname}', loss.item())
         total_loss = sum(losses)
-        self.writer.add_scalar('total_loss', total_loss.item())
+        if self.write_tensorboard:
+            self.writer.add_scalar('total_loss', total_loss.item())
         return total_loss
 
-    def _get_and_write_metrics(self, data, model_output, write=True):
+    def _get_and_write_metrics(self, data, model_output):
         """ Calculate evaluation metrics and write them to Tensorboard """
         acc_metrics = np.zeros(len(self.evaluation_metrics))
         for i, metric in enumerate(self.evaluation_metrics):
             acc_metrics[i] += metric(data, model_output)
-            if write:
+            if self.write_tensorboard:
                 self.writer.add_scalar(metric.nickname, acc_metrics[i])
         return acc_metrics
 
@@ -115,7 +117,8 @@ class WorkerTemplate(ABC):
         output = self._init_output()
         for batch_idx, data in enumerate(self.data_loader):
             batch_start_time = time.time()
-            self._setup_writer()
+            if self.write_tensorboard:
+                self._setup_writer()
             data = self._data_to_device(data)
             model_output, loss, metrics = self._run_and_optimize_model(data)
 
@@ -127,7 +130,8 @@ class WorkerTemplate(ABC):
             }
 
             if batch_idx % global_config.log_step == 0:
-                self._write_data_to_tensorboard(data, model_output)
+                if self.write_tensorboard:
+                    self._write_data_to_tensorboard(data, model_output)
                 if global_config.verbosity >= 2:
                     self._print_log(epoch, batch_idx, batch_start_time, loss, metrics)
 

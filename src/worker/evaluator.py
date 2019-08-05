@@ -28,6 +28,7 @@ class Evaluator(WorkerTemplate):
             setattr(self, attr_name, getattr(pipeline, attr_name))
         self.gt_data_loader = gt_data_loader
         self.result_data_loader = result_data_loader
+        self.write_tensorboard = False
 
     @property
     def enable_grad(self):
@@ -82,7 +83,7 @@ class Evaluator(WorkerTemplate):
             batch_start_time = time.time()
             gt = self._data_to_device(gt)
             result = self._data_to_device(result)
-            metrics = self._get_and_write_metrics(gt, result, write=False)
+            metrics = self._get_and_write_metrics(gt, result)
             output = self._update_output(output, metrics)
 
             if batch_idx % global_config.log_step == 0:
